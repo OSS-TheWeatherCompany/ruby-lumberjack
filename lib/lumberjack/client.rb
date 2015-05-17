@@ -14,6 +14,8 @@ module Lumberjack
         :port => 0,
         :addresses => [],
         :ssl_certificate => nil,
+        :ssl_key => nil,
+        :ssl_key_passphrase => nil,
         :window_size => 5000
       }.merge(opts)
 
@@ -69,6 +71,8 @@ module Lumberjack
         :port => 0,
         :address => "127.0.0.1",
         :ssl_certificate => nil,
+        :ssl_key => nil,
+        :ssl_key_passphrase => nil,
         :window_size => 5000
       }.merge(opts)
       @host = @opts[:address]
@@ -80,7 +84,12 @@ module Lumberjack
     private
     def connection_start(opts)
       tcp_socket = TCPSocket.new(opts[:address], opts[:port])
-      @socket = OpenSSL::SSL::SSLSocket.new(tcp_socket)
+      @ssl = OpenSSL::SSL::SSLContext.new
+      @ssl.cert = OpenSSL::X509::Certificate.new(File.read(@opts[:ssl_certificate]))
+      @ssl.key = OpenSSL::PKey::RSA.new(File.read(@opts[:ssl_key]),
+                                        @opts[:ssl_key_passphrase])
+
+      @socket = OpenSSL::SSL::SSLSocket.new(tcp_socket, @ssl)
       @socket.connect
       @socket.syswrite(["1", "W", @window_size].pack("AAN"))
     end

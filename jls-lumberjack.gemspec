@@ -3,7 +3,8 @@ Gem::Specification.new do |gem|
   gem.email         = ["jls@semicomplete.com"]
   gem.description   = "lumberjack log transport library"
   gem.summary       = gem.description
-  gem.homepage      = "https://github.com/jordansissel/lumberjack"
+  gem.homepage      = "https://github.com/elastic/ruby-lumberjack"
+  gem.license       = "Apache License, Version 2.0"
 
   gem.files = %w{
     lib/lumberjack/server.rb
